@@ -1,8 +1,9 @@
 @require: stdjareport
-@import: bibyfi
 @import: example-bib
+@import: bibyfi
 @import: bibyfi-IEEETran
 
+let bibyfi-theme = BiByFiIEEETran.theme in
 document(|
   title = {Example of \BiByFi;};
   author = {Nakano Masaki};
@@ -10,5 +11,5 @@ document(|
   +p{
     テスト\cite[`comon1994independent`];
   }
-  +makebibliography(bibyfi-IEEETransTheme)(bibs);
+  +makebibliography(bibyfi-theme)(bibs);
 >
