@@ -1,0 +1,7 @@
+@import: bibyfi
+
+let bibs = [
+  (`comon1994independent`, Article(|
+    author = {|Pierre Comon|};
+  |));
+]

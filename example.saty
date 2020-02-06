@@ -1,0 +1,13 @@
+@require: stdjareport
+@import: bibyfi
+@import: example-bib
+
+document(|
+  title = {Example of \BiByFi;};
+  author = {Nakano Masaki};
+|) '<
+  +p{
+    テスト\cite[`comon1994independent`];
+  }
+  +makebibliography(bibs);
+>

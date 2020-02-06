@@ -1,0 +1,24 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     Original author: T. Suwa (github: gfngfn)                 %
+% Original repository: https://github.com/gfngfn/cs-thesis      %
+%                                                               %
+%              Author: Nakano Masaki<namachan10777@gmail.com>   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+type bibyfi-article =
+  (|
+    author : inline-text list;
+  |)
+
+type bibyfi-item =
+  | Article of bibyfi-article
+
+module BiByFi: sig
+  direct \cite : [string list] inline-cmd
+  direct +makebibliography : [(string * bibyfi-item) list] block-cmd
+  direct \BiByFi : [] inline-cmd
+end = struct
+  let-inline ctx \cite _ = read-inline ctx {}
+  let-block ctx +makebibliography _ = read-block ctx '<>
+  let-inline ctx \BiByFi = read-inline ctx {}
+end
