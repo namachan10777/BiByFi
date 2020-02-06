@@ -1,7 +1,7 @@
 @require: stdjareport
 @import: bibyfi
 @import: example-bib
-@import: bibyfi-IEEETrans
+@import: bibyfi-IEEETran
 
 document(|
   title = {Example of \BiByFi;};
