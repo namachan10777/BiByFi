@@ -3,5 +3,14 @@
 let bibs = [
   (`comon1994independent`, Article(|
     author = {|Pierre Comon|};
+    title = {Independent component analysis, a new concept?};
+    journal = {Signal Processing};
+    year = 1994;
+    volume = Some(36);
+    number = Some({3});
+    pages = (287,314);
+    month = None;
+    key = None;
+    note = None;
   |));
 ]

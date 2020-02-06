@@ -7,11 +7,190 @@
 
 type bibyfi-article =
   (|
-    author : inline-text list;
+    author       : inline-text list;
+    title        : inline-text;
+    journal      : inline-text;
+    year         : int;
+    % option
+    volume       : int option;
+    number       : inline-text option;
+    pages        : (int * int);
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
   |)
+
+type bibyfi-book = 
+  (|
+    author       : inline-text list;
+    title        : inline-text;
+    publisher    : inline-text;
+    year         : int;
+    % option
+    volume       : int option;
+    series       : inline-text option;
+    address      : inline-text option;
+    edition      : inline-text option;
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-booklet = 
+  (|
+    title        : inline-text;
+    % option
+    author       : (inline-text list) option;
+    howpublished : inline-text option;
+    address      : inline-text option;
+    year         : int option;
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-incollection = 
+  (|
+    author       : inline-text list;
+    title        : inline-text;
+    booktitle    : inline-text;
+    year         : int;
+    % option
+    editor       : (inline-text list) option;
+    pages        : (int * int);
+    organization : inline-text option;
+    publisher    : inline-text option;
+    address      : inline-text option;
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-inproceedings = 
+  (|
+    author       : inline-text list;
+    title        : inline-text;
+    booktitle    : inline-text;
+    year         : int;
+    % option
+    editor       : (inline-text list) option;
+    pages        : (int * int);
+    organization : inline-text option;
+    publisher    : inline-text option;
+    address      : inline-text option;
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-proceedings = 
+  (|
+    title        : inline-text;
+    year         : int;
+    % option
+    editor       : (inline-text list) option;
+    publisher    : inline-text option;
+    organization : inline-text option;
+    address      : inline-text option;
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-manual = 
+  (|
+    title        : inline-text;
+    % option
+    author       : (inline-text list) option;
+    organization : inline-text option;
+    address      : inline-text option;
+    edition      : inline-text option;
+    month        : inline-text option;
+    year         : int option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-masterthesis = 
+  (|
+    author       : inline-text list;
+    title        : inline-text;
+    school       : inline-text;
+    year         : int;
+    % option
+    address      : inline-text option;
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-phdthesis = 
+  (|
+    author       : inline-text list;
+    title        : inline-text;
+    school       : inline-text;
+    year         : int;
+    % option
+    address      : inline-text option;
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-techreport = 
+  (|
+    author       : inline-text list;
+    title        : inline-text;
+    institution  : inline-text;
+    year         : int;
+    % option
+    typeof       : inline-text option;
+    number       : int option;
+    address      : inline-text option;
+    month        : inline-text option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-misc = 
+  (|
+    % option
+    author       : (inline-text list) option;
+    title        : inline-text option;
+    howpublished : inline-text option;
+    month        : inline-text option;
+    year         : int option;
+    note         : inline-text option;
+    key          : inline-text option;
+  |)
+
+type bibyfi-unpublished = 
+  (|
+    % option
+    author       : inline-text list;
+    title        : inline-text;
+    note         : inline-text;
+    %option
+    month        : inline-text option;
+    year         : int option;
+    key          : inline-text option;
+  |)
+
+
 
 type bibyfi-item =
   | Article of bibyfi-article
+  | Book of bibyfi-book
+  | Booklet of bibyfi-booklet
+  | InCollection of bibyfi-incollection
+  | InProceedings of bibyfi-inproceedings
+  | Manual of bibyfi-manual
+  | MasterThesis of bibyfi-masterthesis
+  | PhDThesis of bibyfi-phdthesis
+  | Misc of bibyfi-misc
+  | Proceedings of bibyfi-proceedings
+  | TechReport of bibyfi-techreport
+  | Unpublished of bibyfi-unpublished
 
 module BiByFi: sig
   direct \cite : [string list] inline-cmd
