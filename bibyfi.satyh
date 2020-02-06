@@ -199,11 +199,18 @@ module BiByFi: sig
   direct +makebibliography : [context -> bibyfi-item -> inline-boxes; (string * bibyfi-item) list] block-cmd
   direct \BiByFi : [] inline-cmd
 end = struct
-  let-inline ctx \BiByFi = read-inline ctx {}
-
   let bib-left-padding = 20pt
 
   let-mutable cite-logs <- []
+
+  let-inline ctx \BiByFi =
+    let size = get-font-size ctx in
+    let f = read-inline ctx in
+    let fd = ctx |> set-manual-rising (0pt -' (size *' 0.25)) |> read-inline in
+    let ib = 
+      f {BiB} ++ kern (size *' 0.05) ++ fd{Y} ++ f{F} ++ kern(size *' 0.05) ++ fd{I}
+    in
+    script-guard Latin (no-break ib)
 
   let-inline ctx \cite labels =
     let sacc =
