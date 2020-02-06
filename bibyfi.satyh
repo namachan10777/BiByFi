@@ -199,7 +199,7 @@ type bibyfi-item =
 
 module BiByFi: sig
   direct \cite : [string list] inline-cmd
-  direct +makebibliography : [context -> bibyfi-item -> inline-boxes; (string * bibyfi-item) list] block-cmd
+  direct +makebibliography : [context -> int -> bibyfi-item -> block-boxes; (string * bibyfi-item) list] block-cmd
   direct \BiByFi : [] inline-cmd
 end = struct
   let bib-left-padding = 20pt
@@ -245,15 +245,6 @@ end = struct
       | Some (l) -> l :: sort-same f src tl
       | None -> sort-same f src tl)
 
-  let bib-entry ctx cite-num ib-main =
-    let ib-num = read-inline ctx (embed-string (`[` ^ arabic cite-num ^ `] `#)) in
-    let ib =
-      inline-skip (0pt -' get-natural-width ib-num)
-        ++ ib-num ++ ib-main ++ inline-fil
-    in
-    let pads = (bib-left-padding, 0pt, 0pt, 0pt) in
-    block-frame-breakable ctx pads VDecoSet.empty (fun ctx -> line-break true true ctx ib)
-
   let-block ctx +makebibliography theme bibs =
       let bibs =
         sort-same (fun (cited, _) label -> string-same label cited) bibs !cite-logs
@@ -265,7 +256,7 @@ end = struct
         ))
       in
         bibs |> List.fold-lefti (fun i bbacc (_, bibitem) -> (
-          bbacc +++ bib-entry ctx (i + 1) (theme ctx bibitem)
+          bbacc +++ theme ctx  (i + 1) bibitem
         )) block-nil
   % }}}
 end

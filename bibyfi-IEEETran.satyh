@@ -1,1 +1,1 @@
-let bibyfi-IEEETransTheme ctx _ = read-inline ctx {}
+let bibyfi-IEEETransTheme ctx _ _ = read-block ctx '<>
