@@ -1,6 +1,7 @@
 @require: stdjareport
 @import: bibyfi
 @import: example-bib
+@import: bibyfi-IEEETrans
 
 document(|
   title = {Example of \BiByFi;};
@@ -9,5 +10,5 @@ document(|
   +p{
     テスト\cite[`comon1994independent`];
   }
-  +makebibliography(bibs);
+  +makebibliography(bibyfi-IEEETransTheme)(bibs);
 >

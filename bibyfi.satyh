@@ -5,6 +5,8 @@
 %              Author: Nakano Masaki<namachan10777@gmail.com>   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+@require: vdecoset
+
 type bibyfi-article =
   (|
     author       : inline-text list;
@@ -194,10 +196,64 @@ type bibyfi-item =
 
 module BiByFi: sig
   direct \cite : [string list] inline-cmd
-  direct +makebibliography : [(string * bibyfi-item) list] block-cmd
+  direct +makebibliography : [context -> bibyfi-item -> inline-boxes; (string * bibyfi-item) list] block-cmd
   direct \BiByFi : [] inline-cmd
 end = struct
-  let-inline ctx \cite _ = read-inline ctx {}
-  let-block ctx +makebibliography _ = read-block ctx '<>
   let-inline ctx \BiByFi = read-inline ctx {}
+
+  let bib-left-padding = 20pt
+
+  let-mutable cite-logs <- []
+
+  let-inline ctx \cite labels =
+    let sacc =
+      labels |> List.fold-left-adjacent (fun sacc label _ opt -> (
+        let () = cite-logs <- (
+          if List.fold-left (fun acc cited -> (string-same cited label) || acc) false !cite-logs
+          then !cite-logs
+          else label :: !cite-logs
+        )
+        in
+        let s-num =
+          match get-cross-reference (`__bibyfi:` ^ label) with
+          | None -> `?`
+          | Some(l) -> l
+        in
+          match opt with
+          | None -> sacc ^ s-num
+          | Some(_) -> sacc ^ s-num ^ `, `#
+        )) ` `
+      in
+        inline-skip 2pt ++ read-inline ctx (embed-string (`[` ^ sacc ^ `]`))
+
+  let-rec sort-same f src refs =
+    let pick label lst = lst |> List.filter (fun l -> f l label) |> List.nth 0 in
+    match refs with
+    | [] -> []
+    | label1 :: tl -> (match pick label1 src with
+      | Some (l) -> l :: sort-same f src tl
+      | None -> sort-same f src tl)
+
+  let bib-entry ctx cite-num ib-main =
+    let ib-num = read-inline ctx (embed-string (`[` ^ arabic cite-num ^ `] `#)) in
+    let ib =
+      inline-skip (0pt -' get-natural-width ib-num)
+        ++ ib-num ++ ib-main ++ inline-fil
+    in
+    let pads = (bib-left-padding, 0pt, 0pt, 0pt) in
+    block-frame-breakable ctx pads VDecoSet.empty (fun ctx -> line-break true true ctx ib)
+
+  let-block ctx +makebibliography theme bibs =
+      let bibs =
+        sort-same (fun (cited, _) label -> string-same label cited) bibs !cite-logs
+        |> List.reverse
+      in
+      let () =
+        bibs |> List.iteri (fun i (label, _) -> (
+          register-cross-reference (`__bibyfi:` ^ label) (arabic (i + 1))
+        ))
+      in
+        bibs |> List.fold-lefti (fun i bbacc (_, bibitem) -> (
+          bbacc +++ bib-entry ctx (i + 1) (theme ctx bibitem)
+        )) block-nil
 end
