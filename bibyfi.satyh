@@ -7,6 +7,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 @require: vdecoset
+@require: option
 
 % global types {{{
 
@@ -203,6 +204,33 @@ module BiByFi: sig
   direct \BiByFi : [] inline-cmd
 end = struct
   let bib-left-padding = 20pt
+
+  let int-of-string s =
+    let digit-of-string s = match s with
+      | `0` -> Some(0)
+      | `1` -> Some(1)
+      | `2` -> Some(2)
+      | `3` -> Some(3)
+      | `4` -> Some(4)
+      | `5` -> Some(5)
+      | `6` -> Some(6)
+      | `7` -> Some(7)
+      | `8` -> Some(8)
+      | `9` -> Some(9)
+      | _   -> None
+    in
+    let-rec f exp s =
+      let l = string-length s in
+      match l with
+      | 0 -> None
+      | 1 -> 
+        (Option.map (fun d -> exp * d) (digit-of-string (string-sub s (l - 1) 1)))
+      | _ ->
+        Option.bind
+          (f (exp * 10) (string-sub s 0 (l - 1)))
+          (fun n -> Option.map (fun d -> n + exp * d) (digit-of-string (string-sub s (l - 1) 1)))
+    in
+    f 1 s
 
   % implementations {{{
   let-mutable cite-logs <- []
