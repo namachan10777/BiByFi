@@ -202,8 +202,12 @@ module BiByFi: sig
   direct \cite : [string list] inline-cmd
   direct +makebibliography : [context -> int -> bibyfi-item -> block-boxes; (string * bibyfi-item) list] block-cmd
   direct \BiByFi : [] inline-cmd
+
+  val join-authors : inline-text -> inline-text -> inline-text list -> inline-text
 end = struct
   let bib-left-padding = 20pt
+
+  % internal functions {{{
 
   let int-of-string s =
     let digit-of-string s = match s with
@@ -231,6 +235,21 @@ end = struct
           (fun n -> Option.map (fun d -> n + exp * d) (digit-of-string (string-sub s (l - 1) 1)))
     in
     f 1 s
+
+  % }}}
+
+  % helpers for style file {{{
+  let join-authors sep sep-last authors =
+    match List.reverse authors with
+    | []                    -> {}
+    | it :: []              -> it
+    | it2 :: it1 :: []      -> {#it1;#sep-last;#it2;}
+    | it-last :: it-rest ->
+      let its = it-rest
+        |> List.fold-left (fun acc it -> {#acc;#it;#sep;}) {}
+      in
+        {#its;#sep-last;#it-last;}
+  % }}}
 
   % implementations {{{
   let-mutable cite-logs <- []
