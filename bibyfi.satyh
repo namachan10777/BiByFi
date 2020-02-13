@@ -204,6 +204,7 @@ module BiByFi: sig
   direct \BiByFi : [] inline-cmd
 
   val join-authors : inline-text -> inline-text -> inline-text list -> inline-text
+  val make-entry : context -> inline-boxes -> inline-boxes -> block-boxes
 end = struct
   let bib-left-padding = 20pt
 
@@ -249,6 +250,14 @@ end = struct
         |> List.fold-left (fun acc it -> {#acc;#it;#sep;}) {}
       in
         {#its;#sep-last;#it-last;}
+
+  let make-entry ctx ib-num ib-main =
+    let ib =
+      inline-skip (0pt -' get-natural-width ib-num)
+        ++ ib-num ++ ib-main ++ inline-fil
+    in
+    let pads = (20pt, 0pt, 0pt, 0pt) in
+    block-frame-breakable ctx pads VDecoSet.empty (fun ctx -> line-break true true ctx ib)
   % }}}
 
   % implementations {{{

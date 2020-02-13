@@ -4,16 +4,11 @@ module BiByFiIEEETran : sig
   val theme : context -> int -> bibyfi-item -> block-boxes
 end = struct
 
-  let entry ctx cite-index ib-main =
-    let ib-num = read-inline ctx (embed-string (`[` ^ arabic cite-index ^ `] `#)) in
-    let ib =
-      inline-skip (0pt -' get-natural-width ib-num)
-        ++ ib-num ++ ib-main ++ inline-fil
-    in
-    let pads = (20pt, 0pt, 0pt, 0pt) in
-    block-frame-breakable ctx pads VDecoSet.empty (fun ctx -> line-break true true ctx ib)
+  let mk-index ctx index =
+    let s = `[` ^ arabic index ^ `] `# in
+    read-inline ctx (embed-string s)
 
   let theme ctx index bib-item =
     match bib-item with
-    | _ -> entry ctx index (read-inline ctx {yet implemented})
+    | _ -> BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx {yet implemented})
 end
