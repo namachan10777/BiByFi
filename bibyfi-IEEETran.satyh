@@ -8,7 +8,42 @@ end = struct
     let s = `[` ^ arabic index ^ `] `# in
     read-inline ctx (embed-string s)
 
+  let-inline ctx \book-title it =
+    read-inline ctx it
+
+  let mk-pages (s, e) =
+    {pp. #s;–#e;}
+
+  let mk-year-month year month =
+    match month with
+    | None -> {#year;}
+    | Some(month) -> {#month;\ #year;}
+
+  let-inline ctx \space l =
+    inline-skip l
+
+  let mk-article r =
+      let title = r#title in
+      let journal = r#journal in
+      BiByFi.join-elements {,\ } {.} [
+        BiByFi.lift-elem (BiByFi.join-authors {,\ } {and\ } r#author);
+        Some (|
+          not-tail = fun sep     -> {“#title;#sep;”\space(10pt);};
+          tail     = fun periodo -> {“#title;#periodo;”};
+        |);
+        BiByFi.lift-elem {\book-title{#journal;}};
+        BiByFi.lift-elem (mk-pages r#pages);
+        BiByFi.map-elem  (Option.map (fun v -> {vol. #v;}) r#volume);
+        BiByFi.map-elem  (Option.map (fun n ->  {no. #n;}) r#number);
+        BiByFi.lift-elem (mk-year-month r#year r#month);
+        BiByFi.map-elem  r#note;
+        BiByFi.map-elem  r#key;
+      ]
+
   let theme ctx index bib-item =
     match bib-item with
-    | _ -> BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx {yet implemented})
+    | Article(r) ->
+      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-article r))
+    | _ ->
+      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx {yet implemented})
 end

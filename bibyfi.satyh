@@ -16,11 +16,11 @@ type bibyfi-article =
     author       : inline-text list;
     title        : inline-text;
     journal      : inline-text;
-    year         : int;
+    year         : inline-text;
+    pages        : (inline-text * inline-text);
     % option
-    volume       : int option;
+    volume       : inline-text option;
     number       : inline-text option;
-    pages        : (int * int);
     month        : inline-text option;
     note         : inline-text option;
     key          : inline-text option;
@@ -31,9 +31,9 @@ type bibyfi-book =
     author       : inline-text list;
     title        : inline-text;
     publisher    : inline-text;
-    year         : int;
+    year         : inline-text;
     % option
-    volume       : int option;
+    volume       : inline-text option;
     series       : inline-text option;
     address      : inline-text option;
     edition      : inline-text option;
@@ -49,7 +49,7 @@ type bibyfi-booklet =
     author       : (inline-text list) option;
     howpublished : inline-text option;
     address      : inline-text option;
-    year         : int option;
+    year         : inline-text option;
     month        : inline-text option;
     note         : inline-text option;
     key          : inline-text option;
@@ -60,10 +60,10 @@ type bibyfi-incollection =
     author       : inline-text list;
     title        : inline-text;
     booktitle    : inline-text;
-    year         : int;
+    year         : inline-text;
     % option
     editor       : (inline-text list) option;
-    pages        : (int * int);
+    pages        : (inline-text * inline-text);
     organization : inline-text option;
     publisher    : inline-text option;
     address      : inline-text option;
@@ -77,10 +77,10 @@ type bibyfi-inproceedings =
     author       : inline-text list;
     title        : inline-text;
     booktitle    : inline-text;
-    year         : int;
+    year         : inline-text;
     % option
     editor       : (inline-text list) option;
-    pages        : (int * int);
+    pages        : (inline-text * inline-text);
     organization : inline-text option;
     publisher    : inline-text option;
     address      : inline-text option;
@@ -92,7 +92,7 @@ type bibyfi-inproceedings =
 type bibyfi-proceedings = 
   (|
     title        : inline-text;
-    year         : int;
+    year         : inline-text;
     % option
     editor       : (inline-text list) option;
     publisher    : inline-text option;
@@ -112,7 +112,7 @@ type bibyfi-manual =
     address      : inline-text option;
     edition      : inline-text option;
     month        : inline-text option;
-    year         : int option;
+    year         : inline-text option;
     note         : inline-text option;
     key          : inline-text option;
   |)
@@ -122,7 +122,7 @@ type bibyfi-masterthesis =
     author       : inline-text list;
     title        : inline-text;
     school       : inline-text;
-    year         : int;
+    year         : inline-text;
     % option
     address      : inline-text option;
     month        : inline-text option;
@@ -135,7 +135,7 @@ type bibyfi-phdthesis =
     author       : inline-text list;
     title        : inline-text;
     school       : inline-text;
-    year         : int;
+    year         : inline-text;
     % option
     address      : inline-text option;
     month        : inline-text option;
@@ -148,10 +148,10 @@ type bibyfi-techreport =
     author       : inline-text list;
     title        : inline-text;
     institution  : inline-text;
-    year         : int;
+    year         : inline-text;
     % option
     typeof       : inline-text option;
-    number       : int option;
+    number       : inline-text option;
     address      : inline-text option;
     month        : inline-text option;
     note         : inline-text option;
@@ -165,7 +165,7 @@ type bibyfi-misc =
     title        : inline-text option;
     howpublished : inline-text option;
     month        : inline-text option;
-    year         : int option;
+    year         : inline-text option;
     note         : inline-text option;
     key          : inline-text option;
   |)
@@ -178,7 +178,7 @@ type bibyfi-unpublished =
     note         : inline-text;
     %option
     month        : inline-text option;
-    year         : int option;
+    year         : inline-text option;
     key          : inline-text option;
   |)
 
@@ -198,6 +198,12 @@ type bibyfi-item =
   | TechReport of bibyfi-techreport
   | Unpublished of bibyfi-unpublished
 
+type bibyfi-entry-element = 
+  (|
+    not-tail : inline-text -> inline-text;
+    tail : inline-text -> inline-text;
+  |)
+
 module BiByFi: sig
   direct \cite : [string list] inline-cmd
   direct +makebibliography : [context -> int -> bibyfi-item -> block-boxes; (string * bibyfi-item) list] block-cmd
@@ -205,6 +211,9 @@ module BiByFi: sig
 
   val join-authors : inline-text -> inline-text -> inline-text list -> inline-text
   val make-entry : context -> inline-boxes -> inline-boxes -> block-boxes
+  val join-elements : inline-text -> inline-text -> (bibyfi-entry-element option) list -> inline-text
+  val lift-elem : inline-text -> bibyfi-entry-element option
+  val map-elem : inline-text option -> bibyfi-entry-element option
 end = struct
   let bib-left-padding = 20pt
 
@@ -258,6 +267,35 @@ end = struct
     in
     let pads = (20pt, 0pt, 0pt, 0pt) in
     block-frame-breakable ctx pads VDecoSet.empty (fun ctx -> line-break true true ctx ib)
+
+  let lift-elem e = Some
+  (|
+    not-tail = fun sep     -> {#e;#sep;};
+    tail     = fun periodo -> {#e;#periodo;};
+  |)
+
+  let map-elem e = Option.map (fun e ->
+  (|
+    not-tail = fun sep     -> {#e;#sep;};
+    tail     = fun periodo -> {#e;#periodo;};
+  |)) e
+
+  let-rec shrink l = match l with
+    | [] -> []
+    | (None) :: tail -> shrink tail
+    | (Some(x)) :: tail -> x :: shrink tail
+
+  let join-elements sep periodo elements =
+    match elements |> shrink |> List.reverse with
+    | [elem] ->
+      elem#tail periodo
+    | elem-last :: elements ->
+      let it-body = List.fold-left (fun acc elem -> (
+        let it-elem = elem#not-tail sep in
+          {#it-elem;#acc;})) {} elements
+      in
+        let tail = elem-last#tail periodo in
+        {#it-body;#tail;}
   % }}}
 
   % implementations {{{

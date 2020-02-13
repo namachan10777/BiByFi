@@ -5,10 +5,22 @@ let bibs = [
     author = {|Pierre Comon|};
     title = {Independent component analysis, a new concept?};
     journal = {Signal Processing};
-    year = 1994;
-    volume = Some(36);
+    year = {1994};
+    volume = Some({36});
     number = Some({3});
-    pages = (287,314);
+    pages = ({287},{314});
+    month = None;
+    key = None;
+    note = None;
+  |));
+  (`sawada2013multichannel`, Article(|
+    author= {|Hiroshi Sawada|Hirokazu Kameoka|Shoko Araki|Naonori Ueda|};
+    title = {Multichannel Extensions of Non-Negative Matrix Factorization With Complex-Valued Data};
+    journal = {IEEE Transactions on Audio, Speech, and Language Processing};
+    year = {2013};
+    volume = Some({21});
+    number = Some({5});
+    pages = ({971},{982});
     month = None;
     key = None;
     note = None;
