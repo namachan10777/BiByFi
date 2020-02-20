@@ -39,4 +39,17 @@ let bibs = [
     note = None;
     key = None;
   |));
+  (`asano2011`, Book(|
+    author = [`浅野 太`];
+    title = `音のアレイ信号処理`;
+    publisher = `コロナ社`;
+    year = `2011`;
+    volume = None;
+    series = None;
+    address = None;
+    edition = None;
+    month = None;
+    note = None;
+    key = None;
+  |));
 ]
