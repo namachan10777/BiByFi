@@ -80,7 +80,7 @@ type bibyfi-inproceedings =
     year         : string;
     % option
     editor       : (string list) option;
-    pages        : (string * string);
+    pages        : (string * string) option;
     organization : string option;
     publisher    : string option;
     address      : string option;
