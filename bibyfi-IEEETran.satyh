@@ -57,6 +57,13 @@ end = struct
       then {“#it-title;”}
       else {“#it-title;#sep;”}
 
+  let mk-publisher addr publisher = match (addr, publisher) with
+    | (Some(addr), Some(publisher)) -> (
+      let it-addr = embed-string addr in
+      let it-publisher = embed-string publisher in
+      Some({#it-addr;:\ #it-publisher;}))
+    | _ -> None
+
   let mk-article r =
       let it-journal = embed-string r#journal in
       let it-note = Option.map embed-string r#note in
@@ -82,10 +89,39 @@ end = struct
         BiByFi.map-elem it-key;
       ]
 
+
+  let mk-inproceedings r =
+    let it-authors = BiByFi.join-authors {,\ } {and\ } (List.map embed-string r#author) in
+    let it-booktitle = embed-string r#booktitle in
+    let it-editors = r#editor
+      |> Option.map (fun editors -> BiByFi.join-authors {,\ } {and\ } (List.map embed-string editors))
+      |> Option.map (fun it-editor -> {#it-editor;,\ Eds.}) in
+    let it-note = Option.map embed-string r#note in
+    let it-key = Option.map embed-string r#key in
+    let it-organization = Option.map embed-string r#organization in
+    let it-publisher = mk-publisher r#address r#publisher in
+    BiByFi.join-elements {,\ } {.} [
+      BiByFi.lift-elem it-authors;
+      Some (|
+        not-tail = fun sep     -> (let it-title = mk-title r#title sep     in {#it-title;\space(10pt);});
+        tail     = fun periodo -> (let it-title = mk-title r#title periodo in {#it-title;});
+      |);
+      BiByFi.lift-elem {in\ \book-title{#it-booktitle;}};
+      BiByFi.map-elem it-editors;
+      BiByFi.map-elem it-organization;
+      BiByFi.map-elem it-publisher;
+      BiByFi.lift-elem (mk-year-month r#year r#month);
+      BiByFi.map-elem (Option.map mk-pages r#pages);
+      BiByFi.map-elem it-note;
+      BiByFi.map-elem it-key;
+    ]
+
   let theme ctx index bib-item =
     match bib-item with
     | Article(r) ->
       BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-article r))
+    | InProceedings(r) ->
+      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-inproceedings r))
     | _ ->
       BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx {yet implemented})
 end

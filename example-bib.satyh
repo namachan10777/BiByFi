@@ -25,4 +25,18 @@ let bibs = [
     key = None;
     note = None;
   |));
+  (`kitamura2017experimental`, InProceedings(|
+    author = [`Daichi Kitamura`; `Nobutaka Ono`; `Hiroshi Saruwatari`];
+    title = `Experimental analysis of optimal window length for independent low-rank matrix analysis`;
+    booktitle = `European Association for Signal Processing`;
+    pages = Some((`1170`, `1174`));
+    year = `2017`;
+    editor = None;
+    organization = None;
+    publisher = None;
+    address = None;
+    month = None;
+    note = None;
+    key = None;
+  |));
 ]
