@@ -109,7 +109,7 @@ end = struct
       mk-title-elem r#title;
       BiByFi.lift-elem {in\ \book-title{#it-booktitle;}};
       BiByFi.map-elem it-editors;
-      BiByFi.map-elem it-organization;
+      BiByFi.custom-sep {.} {.} (BiByFi.map-elem it-organization);
       BiByFi.map-elem it-publisher;
       BiByFi.lift-elem (mk-year-month r#year r#month);
       BiByFi.map-elem (Option.map mk-pages r#pages);
@@ -138,7 +138,7 @@ end = struct
       BiByFi.lift-elem it-authors;
       mk-title-elem r#title;
       BiByFi.map-elem it-edition;
-      BiByFi.map-elem it-series;
+      BiByFi.custom-sep {.} {.} (BiByFi.map-elem it-series);
       BiByFi.lift-elem it-publisher;
       BiByFi.lift-elem it-year-month;
       BiByFi.map-elem it-volume;

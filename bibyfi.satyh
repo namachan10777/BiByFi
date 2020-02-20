@@ -214,6 +214,7 @@ module BiByFi: sig
   val join-elements : inline-text -> inline-text -> inline-text -> (bibyfi-entry-element option) list -> inline-text
   val lift-elem : inline-text -> bibyfi-entry-element option
   val map-elem : inline-text option -> bibyfi-entry-element option
+  val custom-sep : inline-text -> inline-text -> bibyfi-entry-element option -> bibyfi-entry-element option
 end = struct
   let bib-left-padding = 20pt
 
@@ -279,6 +280,12 @@ end = struct
     not-tail = fun sep     -> {#e;#sep;};
     tail     = fun periodo -> {#e;#periodo;};
   |)) e
+
+  let custom-sep sep periodo e = Option.map (fun e ->
+    (|
+      not-tail = fun _ -> e#not-tail sep;
+      tail     = fun _ -> e#tail     periodo;
+    |)) e
 
   let-rec shrink l = match l with
     | [] -> []
