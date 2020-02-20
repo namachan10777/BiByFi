@@ -4,12 +4,18 @@ module BiByFiIEEETran : sig
   val theme : context -> int -> bibyfi-item -> block-boxes
 end = struct
 
+  let font-ratio-latin = 1.
+  let book-title-font = (`Junicode-it`, font-ratio-latin, 0.)
+
   let mk-index ctx index =
     let s = `[` ^ arabic index ^ `] `# in
     read-inline ctx (embed-string s)
 
   let-inline ctx \book-title it =
-    read-inline ctx it
+    let ctx = ctx
+      |> set-font Latin book-title-font
+    in
+      read-inline ctx it
 
   let mk-pages (s, e) =
     {pp. #s;–#e;}
