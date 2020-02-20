@@ -13,173 +13,173 @@
 
 type bibyfi-article =
   (|
-    author       : inline-text list;
-    title        : inline-text;
-    journal      : inline-text;
-    year         : inline-text;
-    pages        : (inline-text * inline-text);
+    author       : string list;
+    title        : string;
+    journal      : string;
+    year         : string;
+    pages        : (string * string);
     % option
-    volume       : inline-text option;
-    number       : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    volume       : string option;
+    number       : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-book = 
   (|
-    author       : inline-text list;
-    title        : inline-text;
-    publisher    : inline-text;
-    year         : inline-text;
+    author       : string list;
+    title        : string;
+    publisher    : string;
+    year         : string;
     % option
-    volume       : inline-text option;
-    series       : inline-text option;
-    address      : inline-text option;
-    edition      : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    volume       : string option;
+    series       : string option;
+    address      : string option;
+    edition      : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-booklet = 
   (|
-    title        : inline-text;
+    title        : string;
     % option
-    author       : (inline-text list) option;
-    howpublished : inline-text option;
-    address      : inline-text option;
-    year         : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    author       : (string list) option;
+    howpublished : string option;
+    address      : string option;
+    year         : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-incollection = 
   (|
-    author       : inline-text list;
-    title        : inline-text;
-    booktitle    : inline-text;
-    year         : inline-text;
+    author       : string list;
+    title        : string;
+    booktitle    : string;
+    year         : string;
     % option
-    editor       : (inline-text list) option;
-    pages        : (inline-text * inline-text);
-    organization : inline-text option;
-    publisher    : inline-text option;
-    address      : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    editor       : (string list) option;
+    pages        : (string * string);
+    organization : string option;
+    publisher    : string option;
+    address      : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-inproceedings = 
   (|
-    author       : inline-text list;
-    title        : inline-text;
-    booktitle    : inline-text;
-    year         : inline-text;
+    author       : string list;
+    title        : string;
+    booktitle    : string;
+    year         : string;
     % option
-    editor       : (inline-text list) option;
-    pages        : (inline-text * inline-text);
-    organization : inline-text option;
-    publisher    : inline-text option;
-    address      : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    editor       : (string list) option;
+    pages        : (string * string);
+    organization : string option;
+    publisher    : string option;
+    address      : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-proceedings = 
   (|
-    title        : inline-text;
-    year         : inline-text;
+    title        : string;
+    year         : string;
     % option
-    editor       : (inline-text list) option;
-    publisher    : inline-text option;
-    organization : inline-text option;
-    address      : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    editor       : (string list) option;
+    publisher    : string option;
+    organization : string option;
+    address      : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-manual = 
   (|
-    title        : inline-text;
+    title        : string;
     % option
-    author       : (inline-text list) option;
-    organization : inline-text option;
-    address      : inline-text option;
-    edition      : inline-text option;
-    month        : inline-text option;
-    year         : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    author       : (string list) option;
+    organization : string option;
+    address      : string option;
+    edition      : string option;
+    month        : string option;
+    year         : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-masterthesis = 
   (|
-    author       : inline-text list;
-    title        : inline-text;
-    school       : inline-text;
-    year         : inline-text;
+    author       : string list;
+    title        : string;
+    school       : string;
+    year         : string;
     % option
-    address      : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    address      : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-phdthesis = 
   (|
-    author       : inline-text list;
-    title        : inline-text;
-    school       : inline-text;
-    year         : inline-text;
+    author       : string list;
+    title        : string;
+    school       : string;
+    year         : string;
     % option
-    address      : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    address      : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-techreport = 
   (|
-    author       : inline-text list;
-    title        : inline-text;
-    institution  : inline-text;
-    year         : inline-text;
+    author       : string list;
+    title        : string;
+    institution  : string;
+    year         : string;
     % option
-    typeof       : inline-text option;
-    number       : inline-text option;
-    address      : inline-text option;
-    month        : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    typeof       : string option;
+    number       : string option;
+    address      : string option;
+    month        : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-misc = 
   (|
     % option
-    author       : (inline-text list) option;
-    title        : inline-text option;
-    howpublished : inline-text option;
-    month        : inline-text option;
-    year         : inline-text option;
-    note         : inline-text option;
-    key          : inline-text option;
+    author       : (string list) option;
+    title        : string option;
+    howpublished : string option;
+    month        : string option;
+    year         : string option;
+    note         : string option;
+    key          : string option;
   |)
 
 type bibyfi-unpublished = 
   (|
     % option
-    author       : inline-text list;
-    title        : inline-text;
-    note         : inline-text;
+    author       : string list;
+    title        : string;
+    note         : string;
     %option
-    month        : inline-text option;
-    year         : inline-text option;
-    key          : inline-text option;
+    month        : string option;
+    year         : string option;
+    key          : string option;
   |)
 
 % }}}
@@ -287,6 +287,7 @@ end = struct
 
   let join-elements sep periodo elements =
     match elements |> shrink |> List.reverse with
+    | [] -> {}
     | [elem] ->
       elem#tail periodo
     | elem-last :: elements ->

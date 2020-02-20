@@ -18,32 +18,68 @@ end = struct
       read-inline ctx it
 
   let mk-pages (s, e) =
-    {pp. #s;–#e;}
+    let it-s = embed-string s in
+    let it-e = embed-string s in
+    {pp. #it-s;–#it-e;}
 
   let mk-year-month year month =
+    let it-year = embed-string year in
     match month with
-    | None -> {#year;}
-    | Some(month) -> {#month;\ #year;}
+    | None -> {#it-year;}
+    | Some(month) -> (
+      let it-month = embed-string month in
+      {#it-month;\ #it-year;}
+    )
 
   let-inline ctx \space l =
     inline-skip l
 
+  let endmarkers-en =
+    List.map string-explode [`.`; `?`; `!`]
+
+  let-rec head-match xs ys = match (xs, ys) with
+    | ([], []) -> true
+    | (x :: xs, y :: ys) -> x == y && head-match xs ys
+    | _ -> true
+
+  let tail-match xs ys =
+    head-match (List.reverse xs) (List.reverse ys)
+
+  let mk-title title sep =
+    let it-title = embed-string title in
+    let title = string-explode title in
+    let title-has-endmark =
+      endmarkers-en
+      |> List.map (fun pattern -> tail-match pattern title)
+      |> List.fold-left ( || ) false
+    in
+      if title-has-endmark
+      then {“#it-title;”}
+      else {“#it-title;#sep;”}
+
   let mk-article r =
-      let title = r#title in
-      let journal = r#journal in
+      let it-journal = embed-string r#journal in
+      let it-note = Option.map embed-string r#note in
+      let it-key = Option.map embed-string r#key in
       BiByFi.join-elements {,\ } {.} [
-        BiByFi.lift-elem (BiByFi.join-authors {,\ } {and\ } r#author);
+        BiByFi.lift-elem (BiByFi.join-authors {,\ } {and\ } (List.map embed-string r#author));
         Some (|
-          not-tail = fun sep     -> {“#title;#sep;”\space(10pt);};
-          tail     = fun periodo -> {“#title;#periodo;”};
+          not-tail = fun sep     -> (let it-title = mk-title r#title sep     in {#it-title;\space(10pt);});
+          tail     = fun periodo -> (let it-title = mk-title r#title periodo in {#it-title;});
         |);
-        BiByFi.lift-elem {\book-title{#journal;}};
+        BiByFi.lift-elem {\book-title{#it-journal;}};
         BiByFi.lift-elem (mk-pages r#pages);
-        BiByFi.map-elem  (Option.map (fun v -> {vol. #v;}) r#volume);
-        BiByFi.map-elem  (Option.map (fun n ->  {no. #n;}) r#number);
+        BiByFi.map-elem  (Option.map
+          (fun v -> (
+            let it-v = embed-string v
+            in {vol. #it-v;})) r#volume);
+        BiByFi.map-elem  (Option.map
+          (fun n -> (
+            let it-n = embed-string n in
+            {no. #it-n;})) r#number);
         BiByFi.lift-elem (mk-year-month r#year r#month);
-        BiByFi.map-elem  r#note;
-        BiByFi.map-elem  r#key;
+        BiByFi.map-elem it-note;
+        BiByFi.map-elem it-key;
       ]
 
   let theme ctx index bib-item =
