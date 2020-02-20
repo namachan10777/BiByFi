@@ -153,6 +153,8 @@ end = struct
       BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-inproceedings r))
     | Book(r) ->
       BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-book r))
+    | WildCard(it) ->
+      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx it)
     | _ ->
       BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx {yet implemented})
 end

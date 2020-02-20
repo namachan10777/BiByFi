@@ -9,7 +9,7 @@ document(|
   author = {Nakano Masaki};
 |) '<
   +p{
-    テスト\cite[`comon1994independent`; `sawada2013multichannel`; `kitamura2017experimental`; `asano2011`];
+    テスト\cite[`comon1994independent`; `sawada2013multichannel`; `kitamura2017experimental`; `asano2011`; `wildcard`];
   }
   +makebibliography(bibyfi-theme)(bibs);
 >

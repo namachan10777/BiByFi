@@ -52,4 +52,5 @@ let bibs = [
     note = None;
     key = None;
   |));
+  (`wildcard`, WildCard({This is a joker for you that don't have enough time!}))
 ]

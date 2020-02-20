@@ -197,6 +197,7 @@ type bibyfi-item =
   | Proceedings of bibyfi-proceedings
   | TechReport of bibyfi-techreport
   | Unpublished of bibyfi-unpublished
+  | WildCard of inline-text
 
 type bibyfi-entry-element = 
   (|
