@@ -68,11 +68,11 @@ end = struct
       let it-journal = embed-string r#journal in
       let it-note = Option.map embed-string r#note in
       let it-key = Option.map embed-string r#key in
-      BiByFi.join-elements {,\ } {.} [
+      BiByFi.join-elements {,} {.} {\ } [
         BiByFi.lift-elem (BiByFi.join-authors {,\ } {and\ } (List.map embed-string r#author));
         Some (|
-          not-tail = fun sep     -> (let it-title = mk-title r#title sep     in {#it-title;\space(10pt);});
-          tail     = fun periodo -> (let it-title = mk-title r#title periodo in {#it-title;});
+          not-tail = fun sep     -> mk-title r#title sep    ;
+          tail     = fun periodo -> mk-title r#title periodo;
         |);
         BiByFi.lift-elem {\book-title{#it-journal;}};
         BiByFi.lift-elem (mk-pages r#pages);
@@ -100,11 +100,11 @@ end = struct
     let it-key = Option.map embed-string r#key in
     let it-organization = Option.map embed-string r#organization in
     let it-publisher = mk-publisher r#address r#publisher in
-    BiByFi.join-elements {,\ } {.} [
+    BiByFi.join-elements {,} {.} {\ } [
       BiByFi.lift-elem it-authors;
       Some (|
-        not-tail = fun sep     -> (let it-title = mk-title r#title sep     in {#it-title;\space(10pt);});
-        tail     = fun periodo -> (let it-title = mk-title r#title periodo in {#it-title;});
+        not-tail = fun sep     -> mk-title r#title sep    ;
+        tail     = fun periodo -> mk-title r#title periodo;
       |);
       BiByFi.lift-elem {in\ \book-title{#it-booktitle;}};
       BiByFi.map-elem it-editors;

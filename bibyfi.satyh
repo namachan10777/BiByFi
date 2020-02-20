@@ -211,7 +211,7 @@ module BiByFi: sig
 
   val join-authors : inline-text -> inline-text -> inline-text list -> inline-text
   val make-entry : context -> inline-boxes -> inline-boxes -> block-boxes
-  val join-elements : inline-text -> inline-text -> (bibyfi-entry-element option) list -> inline-text
+  val join-elements : inline-text -> inline-text -> inline-text -> (bibyfi-entry-element option) list -> inline-text
   val lift-elem : inline-text -> bibyfi-entry-element option
   val map-elem : inline-text option -> bibyfi-entry-element option
 end = struct
@@ -285,7 +285,7 @@ end = struct
     | (None) :: tail -> shrink tail
     | (Some(x)) :: tail -> x :: shrink tail
 
-  let join-elements sep periodo elements =
+  let join-elements sep periodo space elements =
     match elements |> shrink |> List.reverse with
     | [] -> {}
     | [elem] ->
@@ -293,11 +293,12 @@ end = struct
     | elem-last :: elements ->
       let it-body = List.fold-left (fun acc elem -> (
         let it-elem = elem#not-tail sep in
-          {#it-elem;#acc;})) {} elements
+          {#it-elem;#space;#acc;})) {} elements
       in
         let tail = elem-last#tail periodo in
         {#it-body;#tail;}
   % }}}
+
 
   % implementations {{{
   let-mutable cite-logs <- []
