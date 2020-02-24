@@ -221,6 +221,35 @@ end = struct
 
   % internal functions {{{
 
+  let-rec merge xs ys = match (xs, ys) with
+    | (x :: xs, y :: ys) ->
+      if x < y
+      then x :: y :: merge xs ys
+      else y :: x :: merge xs ys
+    | (_ :: _, []) -> xs
+    | ([], _ :: _) -> ys
+    | ([], []) -> []
+
+  let-rec split l = match l with
+    | x :: y :: l -> (
+      let (xs, ys) = split l in
+      (x :: xs, y :: ys))
+    | x :: [] ->
+      ([x], [])
+    | [] ->
+      ([], [])
+
+  let-rec sort l =
+    match l with
+    | [] -> []
+    | [x] -> [x]
+    | [x;y] -> if x < y then [x;y] else [y;x]
+    | _ -> 
+      let (xs, ys) = split l in
+      let xs = sort xs in
+      let ys = sort ys in
+      merge xs ys
+
   let int-of-string s =
     let digit-of-string s = match s with
       | `0` -> Some(0)
@@ -355,6 +384,7 @@ end = struct
           | None -> -1
           | Some(l) -> Option.from (-1) (int-of-string l)
         ))
+      |> sort
       |> join-references-smartly
     in
       inline-skip 2pt ++ read-inline ctx (embed-string (`[` ^ sacc ^ `]`))
