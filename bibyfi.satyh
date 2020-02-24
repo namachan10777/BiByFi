@@ -205,9 +205,13 @@ type bibyfi-entry-element =
     tail : inline-text -> inline-text;
   |)
 
+type bib-config = (|
+  sort-references: bool;
+|)
+
 module BiByFi: sig
   direct \cite : [string list] inline-cmd
-  direct +makebibliography : [context -> int -> bibyfi-item -> block-boxes; (string * bibyfi-item) list] block-cmd
+  direct +makebibliography : [bib-config?; context -> int -> bibyfi-item -> block-boxes; (string * bibyfi-item) list] block-cmd
   direct \BiByFi : [] inline-cmd
 
   val join-authors : inline-text -> inline-text -> inline-text -> inline-text list -> inline-text
@@ -397,10 +401,15 @@ end = struct
       | Some (l) -> l :: sort-same f src tl
       | None -> sort-same f src tl)
 
-  let-block ctx +makebibliography theme bibs =
+  let-block ctx +makebibliography ?:cfg theme bibs =
       let bibs =
-        sort-same (fun (cited, _) label -> string-same label cited) bibs !cite-logs
-        |> List.reverse
+        let sorted =
+          sort-same (fun (cited, _) label -> string-same label cited) bibs !cite-logs
+          |> List.reverse
+        in
+        match cfg with
+        | Some(cfg) -> if cfg#sort-references then sorted else bibs
+        | _ -> sorted
       in
       let () =
         bibs |> List.iteri (fun i (label, _) -> (
