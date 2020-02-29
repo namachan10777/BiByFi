@@ -3,7 +3,11 @@
 @import: bibyfi
 @import: bibyfi-IEEETran
 
-let bibyfi-theme = BiByFiIEEETran.theme-shrinked in
+let bibyfi-theme = BiByFiIEEETran.theme (|
+    name-shrink = true;
+    journal-abbr = [(`European Association for Signal Processing`, `EUSIPCO`)];
+  |)
+in
 document(|
   title = {Example of \BiByFi;};
   author = {Nakano Masaki};
