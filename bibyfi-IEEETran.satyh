@@ -73,12 +73,20 @@ end = struct
       tail     = fun periodo -> mk-title title periodo;
     |)
 
+  let mk-authors shrinked authors =
+    let authors =
+      if shrinked
+      then authors |> List.map BiByFi.shrink-name
+      else authors
+    in
+      BiByFi.join-authors {\ and\ } {,\ } {and\ } (List.map embed-string authors)
+
   let mk-article shrinked r =
       let it-journal = embed-string r#journal in
       let it-note = Option.map embed-string r#note in
       let it-key = Option.map embed-string r#key in
       BiByFi.join-elements {,} {.} {\ } [
-        BiByFi.lift-elem (BiByFi.join-authors {\ and\ } {,\ } {and\ } (List.map embed-string r#author));
+        BiByFi.lift-elem (mk-authors shrinked r#author);
         mk-title-elem r#title;
         BiByFi.lift-elem {\book-title{#it-journal;}};
         BiByFi.lift-elem (mk-pages r#pages);
@@ -96,10 +104,10 @@ end = struct
       ]
 
   let mk-inproceedings shrinked r =
-    let it-authors = BiByFi.join-authors {\ and\ } {,\ } {and\ } (List.map embed-string r#author) in
+    let it-authors = mk-authors shrinked r#author in
     let it-booktitle = embed-string r#booktitle in
     let it-editors = r#editor
-      |> Option.map (fun editors -> BiByFi.join-authors {\ and\ } {,\ } {and\ } (List.map embed-string editors))
+      |> Option.map (fun editors -> mk-authors shrinked editors)
       |> Option.map (fun it-editor -> {#it-editor;,\ Eds.}) in
     let it-note = Option.map embed-string r#note in
     let it-key = Option.map embed-string r#key in
@@ -119,7 +127,7 @@ end = struct
     ]
 
   let mk-book shrinked r =
-    let it-authors = BiByFi.join-authors {\ and\ } {,\ } {and\ } (List.map embed-string r#author) in
+    let it-authors = mk-authors shrinked r#author in
     let it-edition = r#edition
       |> Option.map embed-string
       |> Option.map (fun it-edition -> {#it-edition;\ ed.})

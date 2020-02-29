@@ -214,6 +214,8 @@ module BiByFi: sig
   direct +makebibliography : [bib-config?; context -> int -> bibyfi-item -> block-boxes; (string * bibyfi-item) list] block-cmd
   direct \BiByFi : [] inline-cmd
 
+  val shrink-name : string -> string
+
   val join-authors : inline-text -> inline-text -> inline-text -> inline-text list -> inline-text
   val make-entry : context -> inline-boxes -> inline-boxes -> block-boxes
   val join-elements : inline-text -> inline-text -> inline-text -> (bibyfi-entry-element option) list -> inline-text
@@ -284,6 +286,25 @@ end = struct
   % }}}
 
   % helpers for style file {{{
+  let-rec shrink-name name =
+  let splitter = regexp-of-string `[ ]+` in
+  let splited = split-on-regexp splitter name in
+  let shrink n = 
+    let exploded = string-explode n in
+    let initial = (match exploded with
+      | i :: _ -> string-unexplode [i]
+      | _ -> ` `)
+    in
+      initial ^ `. `#
+  in
+  let-rec f name = match name with
+    | [] -> ` `
+    | [(_, n)] -> n
+    | (_, n) :: last -> (shrink n) ^ f last
+  in
+    f splited
+
+
   let join-authors sep-for-double sep sep-last authors =
     match List.reverse authors with
     | []                    -> {}

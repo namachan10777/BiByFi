@@ -3,7 +3,7 @@
 @import: bibyfi
 @import: bibyfi-IEEETran
 
-let bibyfi-theme = BiByFiIEEETran.theme in
+let bibyfi-theme = BiByFiIEEETran.theme-shrinked in
 document(|
   title = {Example of \BiByFi;};
   author = {Nakano Masaki};
