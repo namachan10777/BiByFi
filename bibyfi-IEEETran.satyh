@@ -2,6 +2,7 @@
 
 module BiByFiIEEETran : sig
   val theme : context -> int -> bibyfi-item -> block-boxes
+  val theme-shrinked : context -> int -> bibyfi-item -> block-boxes
 end = struct
 
   let font-ratio-latin = 1.
@@ -72,7 +73,7 @@ end = struct
       tail     = fun periodo -> mk-title title periodo;
     |)
 
-  let mk-article r =
+  let mk-article shrinked r =
       let it-journal = embed-string r#journal in
       let it-note = Option.map embed-string r#note in
       let it-key = Option.map embed-string r#key in
@@ -94,7 +95,7 @@ end = struct
         BiByFi.map-elem it-key;
       ]
 
-  let mk-inproceedings r =
+  let mk-inproceedings shrinked r =
     let it-authors = BiByFi.join-authors {\ and\ } {,\ } {and\ } (List.map embed-string r#author) in
     let it-booktitle = embed-string r#booktitle in
     let it-editors = r#editor
@@ -117,7 +118,7 @@ end = struct
       BiByFi.map-elem it-key;
     ]
 
-  let mk-book r =
+  let mk-book shrinked r =
     let it-authors = BiByFi.join-authors {\ and\ } {,\ } {and\ } (List.map embed-string r#author) in
     let it-edition = r#edition
       |> Option.map embed-string
@@ -145,16 +146,19 @@ end = struct
       BiByFi.map-elem it-note;
     ]
 
-  let theme ctx index bib-item =
+  let impl shrinked ctx index bib-item =
     match bib-item with
     | Article(r) ->
-      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-article r))
+      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-article shrinked r))
     | InProceedings(r) ->
-      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-inproceedings r))
+      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-inproceedings shrinked r))
     | Book(r) ->
-      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-book r))
+      BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx (mk-book shrinked r))
     | WildCard(it) ->
       BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx it)
     | _ ->
       BiByFi.make-entry ctx (mk-index ctx index) (read-inline ctx {yet implemented})
+
+  let theme = impl false
+  let theme-shrinked = impl true
 end
