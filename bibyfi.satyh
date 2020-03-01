@@ -312,6 +312,7 @@ end = struct
     | it2 :: it1 :: []      -> {#it1;#sep-for-double;#it2;}
     | it-last :: it-rest ->
       let its = it-rest
+        |> List.reverse
         |> List.fold-left (fun acc it -> {#acc;#it;#sep;}) {}
       in
         {#its;#sep-last;#it-last;}
