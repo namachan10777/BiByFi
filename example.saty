@@ -5,6 +5,7 @@
 
 let bibyfi-theme = BiByFiIEEETran.theme (|
     name-shrink = true;
+    et-al = true;
     journal-abbr = [(`European Association for Signal Processing`, `EUSIPCO`)];
   |)
 in

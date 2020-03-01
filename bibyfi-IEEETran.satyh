@@ -2,6 +2,7 @@
 
 type bibyfi-ieee-tran-cfg = (|
   name-shrink: bool;
+  et-al: bool;
   journal-abbr : (string * string) list;
 |)
 
@@ -77,11 +78,21 @@ end = struct
       tail     = fun periodo -> mk-title title periodo;
     |)
 
-  let mk-authors shrinked authors =
+  let mk-authors et-al shrinked authors =
     let authors =
       if shrinked
       then authors |> List.map BiByFi.shrink-name
       else authors
+    in
+    let authors =
+      if et-al
+      then (match authors with
+        | [] -> []
+        | [n] -> [n]
+        | [n1;n2] -> [n1;n2]
+        | n1 :: _ -> [n1 ^ #` et al.`])
+      else
+        authors
     in
       BiByFi.join-authors {\ and\ } {,\ } {and\ } (List.map embed-string authors)
 
@@ -99,7 +110,7 @@ end = struct
       let it-note = Option.map embed-string r#note in
       let it-key = Option.map embed-string r#key in
       BiByFi.join-elements {,} {.} {\ } [
-        BiByFi.lift-elem (mk-authors cfg#name-shrink r#author);
+        BiByFi.lift-elem (mk-authors cfg#et-al cfg#name-shrink r#author);
         mk-title-elem r#title;
         BiByFi.lift-elem (mk-journal cfg#journal-abbr r#journal);
         BiByFi.lift-elem (mk-pages r#pages);
@@ -117,10 +128,10 @@ end = struct
       ]
 
   let mk-inproceedings cfg r =
-    let it-authors = mk-authors cfg#name-shrink r#author in
+    let it-authors = mk-authors cfg#et-al cfg#name-shrink r#author in
     let it-booktitle = mk-journal cfg#journal-abbr r#booktitle in
     let it-editors = r#editor
-      |> Option.map (fun editors -> mk-authors cfg#name-shrink editors)
+      |> Option.map (fun editors -> mk-authors cfg#et-al cfg#name-shrink editors)
       |> Option.map (fun it-editor -> {#it-editor;,\ Eds.}) in
     let it-note = Option.map embed-string r#note in
     let it-key = Option.map embed-string r#key in
@@ -140,7 +151,7 @@ end = struct
     ]
 
   let mk-book cfg r =
-    let it-authors = mk-authors cfg#name-shrink r#author in
+    let it-authors = mk-authors cfg#et-al cfg#name-shrink r#author in
     let it-edition = r#edition
       |> Option.map embed-string
       |> Option.map (fun it-edition -> {#it-edition;\ ed.})
