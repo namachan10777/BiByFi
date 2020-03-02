@@ -293,6 +293,10 @@ end = struct
 
   % }}}
 
+  let shrinkable codepoint =
+       (codepoint >= 97 && codepoint <= 122)
+    || (codepoint >= 65 && codepoint <= 90)
+
   % helpers for style file {{{
   let-rec shrink-name name =
   let splitter = regexp-of-string `[ ]+` in
@@ -300,10 +304,14 @@ end = struct
   let shrink n = 
     let exploded = string-explode n in
     let initial = (match exploded with
-      | i :: _ -> string-unexplode [i]
-      | _ -> ` `)
+      | i :: _ -> (if shrinkable i
+        then Some(string-unexplode [i])
+        else None)
+      | _ -> None)
     in
-      initial ^ `. `#
+      match initial with
+      | Some(initial) -> initial ^ `. `#
+      | None -> n ^ #` `#
   in
   let-rec f name = match name with
     | [] -> ` `
