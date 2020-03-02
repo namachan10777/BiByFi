@@ -214,6 +214,7 @@ type bibyfi-citestyle =
 type bib-config = (|
   sort-references: bool;
   citestyle: bibyfi-citestyle;
+  name-shrink: bool;
 |)
 
 module BiByFi: sig
@@ -448,9 +449,10 @@ end = struct
   let default-config = (|
     sort-references = true;
     citestyle = CiteAsNumber;
+    name-shrink = true;
   |)
 
-  let authors-of-item i style item =
+  let authors-of-item i style name-shrink item =
     let f author year = match (author, year) with
       | (Some author, Some year) -> Some (author, year)
       | _ -> None
@@ -472,6 +474,7 @@ end = struct
     in
     authors
     |> Option.map (fun (authors, year) -> (
+      let authors = List.map shrink-name authors in
       match authors with
       | [] -> ` `
       | n1 :: [] -> n1
@@ -506,7 +509,7 @@ end = struct
       in
       let () =
         bibs |> List.iteri (fun i (label, item) -> (
-          register-cross-reference (`__bibyfi:` ^ label) (authors-of-item i cfg#citestyle item)
+          register-cross-reference (`__bibyfi:` ^ label) (authors-of-item i cfg#citestyle cfg#name-shrink item)
         ))
       in
         bibs |> List.fold-lefti (fun i bbacc (_, bibitem) -> (

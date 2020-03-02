@@ -16,5 +16,5 @@ document(|
   +p{
     テスト\cite[`comon1994independent`; `sawada2013multichannel`; `kitamura2017experimental`; `asano2011`; `wildcard`];
   }
-  +makebibliography ?:(|sort-references=true; citestyle=CiteAsAuthorsEtAl|) (bibyfi-theme)(bibs);
+  +makebibliography ?:(|sort-references=true; citestyle=CiteAsAuthorsEtAl; name-shrink=true;|) (bibyfi-theme)(bibs);
 >
