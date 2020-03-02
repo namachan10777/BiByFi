@@ -205,8 +205,15 @@ type bibyfi-entry-element =
     tail : inline-text -> inline-text;
   |)
 
+type bibyfi-citestyle =
+  | CiteAsNumber
+  | CiteAsAuthors
+  | CiteAsAuthorsEtAl
+  | CiteAsAuthorsPlus
+
 type bib-config = (|
   sort-references: bool;
+  citestyle: bibyfi-citestyle;
 |)
 
 module BiByFi: sig
@@ -362,7 +369,6 @@ end = struct
         {#it-body;#tail;}
   % }}}
 
-
   % implementations {{{
   let-mutable cite-logs <- []
 
@@ -399,7 +405,7 @@ end = struct
   let-inline ctx \cite labels =
     let sacc =
       labels
-      |> List.map (fun label -> (
+      |> List.fold-left (fun (numbers, fullcites) label -> (
         let () = cite-logs <- (
           if List.fold-left (fun acc cited -> (string-same cited label) || acc) false !cite-logs
           then !cite-logs
@@ -407,11 +413,27 @@ end = struct
         )
         in
         match get-cross-reference (`__bibyfi:` ^ label) with
-          | None -> -1
-          | Some(l) -> Option.from (-1) (int-of-string l)
+          | None -> (numbers, `unresolved` :: fullcites)
+          | Some(l) -> (match (int-of-string l) with
+            | Some(i) -> (i :: numbers, fullcites)
+            | None -> (numbers, l :: fullcites))
         ))
-      |> sort
-      |> join-references-smartly
+        ([], [])
+      |> (fun (numbers, fullcites) -> (
+        let numebers-str =
+          match numbers with
+          | [] -> ` `
+          | _ -> (numbers |> sort |> join-references-smartly) ^ `, `#
+        in
+        let fullcites-str =
+          let-rec join cites = match cites with
+            | [] -> ` `
+            | c :: [] -> c
+            | c :: last -> c ^ `, `# ^ join last
+          in
+            join fullcites
+        in
+          numebers-str ^ fullcites-str))
     in
       inline-skip 2pt ++ read-inline ctx (embed-string (`[` ^ sacc ^ `]`))
 
@@ -423,19 +445,68 @@ end = struct
       | Some (l) -> l :: sort-same f src tl
       | None -> sort-same f src tl)
 
+  let default-config = (|
+    sort-references = true;
+    citestyle = CiteAsNumber;
+  |)
+
+  let authors-of-item i style item =
+    let f author year = match (author, year) with
+      | (Some author, Some year) -> Some (author, year)
+      | _ -> None
+    in
+    let authors = match item with
+      | Article(r) -> f (Some r#author) (Some r#year)
+      | Book(r) -> f (Some r#author) (Some r#year)
+      | Booklet(r) -> f r#author r#year
+      | InCollection(r) -> f (Some r#author) (Some r#year)
+      | InProceedings(r) -> f (Some r#author) (Some r#year)
+      | Manual(r) -> f r#author r#year
+      | MasterThesis(r) -> f (Some r#author) (Some r#year)
+      | PhDThesis(r) -> f (Some r#author) (Some r#year)
+      | Misc(r) -> f r#author r#year
+      | Proceedings(r) -> None
+      | TechReport(r) -> f (Some r#author) (Some r#year)
+      | Unpublished(r) -> f (Some r#author) r#year
+      | WildCard(r) -> None
+    in
+    authors
+    |> Option.map (fun (authors, year) -> (
+      match authors with
+      | [] -> ` `
+      | n1 :: [] -> n1
+      | n1 :: n2 :: [] -> (
+        match style with
+        | CiteAsAuthorsPlus -> n1 ^ `+`
+        | _ -> n1 ^ #` and `# ^ n2)
+      | n1 :: ns -> (
+        match style with
+        | CiteAsAuthors -> (
+          match List.reverse authors with
+          | nlast :: ns ->
+            (List.fold-left (^) `, `# ns) ^ #` and `# ^ nlast
+          | _ -> ` `)
+        | CiteAsAuthorsEtAl ->
+          n1 ^ #` et al.`
+        | CiteAsAuthorsPlus ->
+          n1 ^ `+`
+        | CiteAsNumber ->
+          (arabic (i + 1))
+      )) ^ #` `# ^ year)
+    |> Option.from (arabic (i + 1))
+
   let-block ctx +makebibliography ?:cfg theme bibs =
+      let cfg = Option.from default-config cfg in
       let bibs =
         let sorted =
           sort-same (fun (cited, _) label -> string-same label cited) bibs !cite-logs
           |> List.reverse
         in
-        match cfg with
-        | Some(cfg) -> if cfg#sort-references then sorted else bibs
-        | _ -> sorted
+        if cfg#sort-references then sorted else bibs
       in
       let () =
-        bibs |> List.iteri (fun i (label, _) -> (
-          register-cross-reference (`__bibyfi:` ^ label) (arabic (i + 1))
+        bibs |> List.iteri (fun i (label, item) -> (
+          register-cross-reference (`__bibyfi:` ^ label) (authors-of-item i cfg#citestyle item)
         ))
       in
         bibs |> List.fold-lefti (fun i bbacc (_, bibitem) -> (
