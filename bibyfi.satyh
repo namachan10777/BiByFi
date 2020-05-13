@@ -480,30 +480,32 @@ end = struct
       | Unpublished(r) -> f (Some r#author) r#year
       | WildCard(r) -> None
     in
-    authors
-    |> Option.map (fun (authors, year) -> (
-      let authors = List.map shrink-name authors in
-      match authors with
-      | [] -> ` `
-      | n1 :: [] -> n1
-      | n1 :: n2 :: [] -> (
-        match style with
-        | CiteAsAuthorsPlus -> n1 ^ `+`
-        | _ -> n1 ^ #` and `# ^ n2)
-      | n1 :: ns -> (
-        match style with
-        | CiteAsAuthors -> (
-          match List.reverse authors with
-          | nlast :: ns ->
-            (List.fold-left (^) `, `# ns) ^ #` and `# ^ nlast
-          | _ -> ` `)
-        | CiteAsAuthorsEtAl ->
-          n1 ^ #` et al.`
-        | CiteAsAuthorsPlus ->
-          n1 ^ `+`
-        | CiteAsNumber ->
-          (arabic (i + 1))
-      )) ^ #` `# ^ year)
+    (match style with
+     | CiteAsNumber -> None
+     | _ -> (
+      authors
+      |> Option.map (fun (authors, year) -> (
+        let authors = List.map shrink-name authors in
+        match authors with
+        | [] -> ` `
+        | n1 :: [] -> n1
+        | n1 :: n2 :: [] -> (
+          match style with
+          | CiteAsAuthorsPlus -> n1 ^ `+`
+          | _ -> n1 ^ #` and `# ^ n2)
+        | n1 :: ns -> (
+          match style with
+          | CiteAsAuthors -> (
+            match List.reverse authors with
+            | nlast :: ns ->
+              (List.fold-left (^) `, `# ns) ^ #` and `# ^ nlast
+            | _ -> ` `)
+          | CiteAsAuthorsEtAl ->
+            n1 ^ #` et al.`
+          | CiteAsAuthorsPlus ->
+            n1 ^ `+`
+          | CiteAsNumber -> ` `
+        )) ^ #` `# ^ year)))
     |> Option.from (arabic (i + 1))
 
   let-block ctx +makebibliography ?:cfg theme bibs =
