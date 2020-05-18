@@ -432,7 +432,7 @@ end = struct
         let numebers-str =
           match numbers with
           | [] -> ` `
-          | _ -> (numbers |> sort |> join-references-smartly) ^ `, `#
+          | _ -> (numbers |> sort |> join-references-smartly)
         in
         let fullcites-str =
           let-rec join cites = match cites with
