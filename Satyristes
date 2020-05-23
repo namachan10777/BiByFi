@@ -1,0 +1,11 @@
+(version "0.0.2")
+(library
+  (name "bibyfi")
+  (version "0.0.1")
+  (sources
+    (
+     (package "bibyfi.satyh" "./bibyfi.satyh")
+     (package "bibyfi-IEEETran.satyh" "./bibyfi-IEEETran.satyh")
+    )
+	))
+  (opam "satysfi-bibyfi.opam"))
