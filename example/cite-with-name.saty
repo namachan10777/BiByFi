@@ -1,0 +1,22 @@
+@require: stdjareport
+@import: ../example-bib
+@import: ../bibyfi
+@import: ../bibyfi-IEEETran
+
+let bibyfi-theme = BiByFiIEEETran.theme (|
+    name-shrink = true;
+    et-al = true;
+    journal-abbr = [(`European Association for Signal Processing`, `EUSIPCO`)];
+  |)
+in
+document(|
+  title = {Example of \BiByFi;};
+  author = {Nakano Masaki};
+|) '<
+  +p{
+    テスト\cite[`comon1994independent`; `sawada2013multichannel`; `kitamura2017experimental`; `asano2011`; `wildcard`];
+	テスト2\cite[`comon1994independent`];
+	テスト2\cite[`comon1994independent`; `kitamura2017experimental`;`asano2011`];
+  }
+  +makebibliography ?:(|sort-references=true; citestyle=CiteAsAuthorsEtAl; name-shrink=true;|) (bibyfi-theme)(bibs);
+>
