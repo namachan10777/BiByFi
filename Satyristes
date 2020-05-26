@@ -9,3 +9,9 @@
     )
 	)
   (opam "satysfi-bibyfi.opam"))
+(libraryDoc
+  (name "bibyfi-doc")
+  (version "0.0.1") ;
+  (workingDirectory "example")
+  (build
+    ((make "-f" "Makefile"))))
