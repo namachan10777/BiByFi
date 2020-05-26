@@ -485,7 +485,7 @@ end = struct
      | _ -> (
       authors
       |> Option.map (fun (authors, year) -> (
-        let authors = List.map shrink-name authors in
+        let authors = List.map shrink-name authors |> List.reverse in
         match authors with
         | [] -> ` `
         | n1 :: [] -> n1
