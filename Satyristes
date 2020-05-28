@@ -14,4 +14,14 @@
   (version "0.0.1") ;
   (workingDirectory "example")
   (build
-    ((make "-f" "Makefile"))))
+    ((make "-f" "Makefile")))
+  (sources
+    ((doc "LICENSE" "LICENSE")
+     (doc "README.md" "README.md")
+     (doc "example-bib.satyh" "example-bib.satyh")
+     (doc "examples/cite-as-number.saty" "example/cite-as-number.saty")
+     (doc "examples/cite-as-number.pdf" "example/cite-as-number.pdf")
+     (doc "examples/cite-with-name.saty" "example/cite-with-name.saty")
+     (doc "examples/cite-with-name.pdf" "example/cite-with-name.pdf")))
+  (opam "satysfi-bibyfi-doc.opam")
+  (dependencies ((bibyfi ()))))

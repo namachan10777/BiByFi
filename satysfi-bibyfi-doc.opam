@@ -1,0 +1,32 @@
+opam-version: "2.0"
+name: "satysfi-bibyfi-doc"
+version: "0.0.1"
+synopsis: "Document: A bibliography framework for SATySFi"
+maintainer: "Nakano Masaki<namachan10777@gmail.com>"
+authors: [
+  "Nakano Masaki<namachan10777@gmail.com>"
+  "T. Suwa"
+]
+homepage: "https://github.com/namachan10777/BiByFi"
+bug-reports: "https://github.com/namachan10777/BiByFi/issues"
+dev-repo: "git+https://github.com/namachan10777/BiByFi.git"
+depends: [
+  "satysfi" {>= "0.0.3" & < "0.0.5"}
+  "satyrographos" {>= "0.0.2.3" & < "0.0.3"}
+  "satysfi-dist"
+
+  # You may want to include the corresponding library
+  "satysfi-bibyfi" {= "%{version}%"}
+]
+build: [
+  ["satyrographos" "opam" "build"
+   "-name" "bibyfi-doc"
+   "-prefix" "%{prefix}%"
+   "-script" "%{build}%/Satyristes"]
+]
+install: [
+  ["satyrographos" "opam" "install"
+   "-name" "bibyfi-doc"
+   "-prefix" "%{prefix}%"
+   "-script" "%{build}%/Satyristes"]
+]
