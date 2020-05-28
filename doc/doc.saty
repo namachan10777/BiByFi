@@ -1,0 +1,27 @@
+% -*- coding: utf-8 -*-
+@require: stdjabook
+@require: code
+@import: local
+@import: ../bibyfi
+
+document(|
+  title = {\BiByFi;};
+  author = {Masaki NAKANO};
+  show-title = true;
+  show-toc = true;
+|) '<
+   +section {Concept} <
+     +p{
+       This software is a framework for citating and enumerating references
+       that is used in your documentation like thesis, proceeding, report and more.
+     }
+   >
+   +section {To represent reference} <
+     +p{
+       References is consists of a list of tuple that is
+       consists of a reference-key and a reference information.
+       The reference-key is \code{string}.
+       The reference information is a direct sum of records defined below.
+     }
+   >
+>
