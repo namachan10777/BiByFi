@@ -1,7 +1,7 @@
 @require: stdjareport
+@require: bibyfi/bibyfi
+@require: bibyfi/bibyfi-IEEETran
 @import: ../example-bib
-@import: ../bibyfi
-@import: ../bibyfi-IEEETran
 
 let bibyfi-theme = BiByFiIEEETran.theme (|
     name-shrink = true;
