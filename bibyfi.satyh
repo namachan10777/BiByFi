@@ -396,16 +396,16 @@ end = struct
       | (_, None) -> acc ^ arabic ref-n
       | (None, Some(n-next)) ->
         if n-next == ref-n + 1
-        then (arabic ref-n) ^ `-`
+        then (arabic ref-n) ^ `–`
         else (arabic ref-n) ^ `, `#
       | (Some(n-prev), Some(n-next)) ->
         if n-next == ref-n + 1 && n-prev + 1 == ref-n
-        % nothing to do because `-` was printed
+        % nothing to do because `–` was printed
         then acc
         else (
           if n-next == ref-n + 1
           % 1, 3-4
-          then acc ^ (arabic ref-n) ^ `-`
+          then acc ^ (arabic ref-n) ^ `–`
           % 1, 3
           else acc ^ (arabic ref-n) ^ `, `#
         )
