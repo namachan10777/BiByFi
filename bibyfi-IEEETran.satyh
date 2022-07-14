@@ -25,7 +25,7 @@ end = struct
 
   let mk-pages (s, e) =
     let it-s = embed-string s in
-    let it-e = embed-string s in
+    let it-e = embed-string e in
     {pp. #it-s;–#it-e;}
 
   let mk-year-month year month =
